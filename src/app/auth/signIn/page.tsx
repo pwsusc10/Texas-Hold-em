@@ -14,7 +14,7 @@ export default async function SignInPage() {
   const providers = (await getProviders()) ?? {};
 
   return (
-    <div className="w-full h-[100vh] flex flex-col justify-center items-center text-7xl text-title gap-[5rem]">
+    <div className="h-[100vh] flex flex-col justify-center items-center text-7xl text-title gap-[5rem]">
       <p className={irish_grover.className}>{"Texas Hold'em"}</p>
       <p className={irish_grover.className}>H P</p>
       <LoginButtons providers={providers} />
