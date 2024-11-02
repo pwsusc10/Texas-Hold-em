@@ -16,7 +16,8 @@ const config: Config = {
         yellow: '#AD975F'
       },
       borderColor: {
-        yellow: '#AD975F'
+        yellow: '#AD975F',
+        deepdark: '#202020'
       },
       fontFamily: {}
     }
