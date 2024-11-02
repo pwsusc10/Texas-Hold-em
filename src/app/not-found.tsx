@@ -21,7 +21,7 @@ export default function NotFound() {
         <ColorButton className="w-36 py-1" filled={false} onClick={() => router.back()}>
           이전 페이지
         </ColorButton>
-        <ColorButton className="w-36 py-1" filled={true} onClick={() => router.replace('/home')}>
+        <ColorButton className="w-36 py-1" filled={true} onClick={() => router.replace('/notice')}>
           홈 페이지
         </ColorButton>
       </div>

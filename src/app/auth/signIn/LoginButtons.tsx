@@ -22,7 +22,7 @@ export default function LoginButtons({ providers }: Props) {
           height={50}
           unoptimized
           className="w-[13rem] hover:cursor-pointer"
-          onClick={() => signIn(provider.id, { callbackUrl: '/home' })}
+          onClick={() => signIn(provider.id, { callbackUrl: '/notice' })}
         />
       ))}
     </div>
