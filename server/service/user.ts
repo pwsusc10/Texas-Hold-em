@@ -20,6 +20,7 @@ export const addUser = async (user: User | AdapterUser): Promise<boolean> => {
   try {
     const query = "INSERT INTO `hold'em`.`users` (`userName`, `email`, `profile`, `chips`, `handCounts`) VALUES (?, ?, ?, ?, ?);";
     const [rows] = await db.execute(query, [user.name, user.email, user.image, 0, 0]);
+
     return true;
   } catch (error) {
     console.error('next-auth addUser function Error: ', error);
