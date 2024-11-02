@@ -10,3 +10,9 @@ export type UserType = {
   UPDATED_AT: Date | null;
   DELETE_AT: Date | null;
 };
+
+// navBar
+export type NavBarItem = {
+  href: string;
+  label: string;
+};
