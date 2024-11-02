@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth';
 import GoogleProvider from 'next-auth/providers/google';
 import KakaoProvider from 'next-auth/providers/kakao';
-import { addUser, checkUser } from '../../../../../server/service/user';
+import { addUser, findUser } from '../../../../../server/service/user';
 import { refreshAccessToken } from '../../../../../server/service/jwt';
 
 const handler = NextAuth({
@@ -34,7 +34,7 @@ const handler = NextAuth({
   },
   callbacks: {
     signIn: async ({ user, account, profile }) => {
-      const result = await checkUser(user.email as string);
+      const result = await findUser(user.email as string);
       if (!result) {
         // new user
         return await addUser(user);

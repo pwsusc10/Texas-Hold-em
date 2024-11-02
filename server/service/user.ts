@@ -4,7 +4,7 @@ import { RowDataPacket } from 'mysql2';
 import { User } from 'next-auth';
 import { AdapterUser } from 'next-auth/adapters';
 
-export const checkUser = async (email: string): Promise<UserType | null> => {
+export const findUser = async (email: string): Promise<UserType | null> => {
   try {
     const query = "SELECT * FROM `hold'em`.`users` WHERE `email` = ?;";
     const [rows] = await db.execute<RowDataPacket[]>(query, [email]);
