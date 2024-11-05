@@ -44,7 +44,9 @@ export default async function MiniProfile() {
         </div>
       </div>
       <div className="flex justify-evenly items-center">
-        <CoinIcon className="text-yellow w-[4rem] h-[4rem]" />
+        <div className="w-[4rem] text-yellow">
+          <CoinIcon />
+        </div>
         <p className="text-2xl">{data.user.chips} c</p>
         <Link href="/my" className="h-fit border-2 border-white rounded-md bg-yellow py-3 px-2 text-xl font-semibold">
           상세보기
