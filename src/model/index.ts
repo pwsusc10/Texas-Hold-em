@@ -6,9 +6,9 @@ export type UserType = {
   profile: string | null;
   chips: number;
   gameLogs: HandIdsType;
-  CREATED_AT: Date | null;
-  UPDATED_AT: Date | null;
-  DELETE_AT: Date | null;
+  created_at: Date;
+  updated_at: Date;
+  state: 'A' | 'D';
 };
 
 export type HandIdsType = {
@@ -20,4 +20,27 @@ export type HandIdsType = {
 export type NavBarItem = {
   href: string;
   label: string;
+};
+
+export type GameRoomType = {
+  id: number;
+  blind: number;
+  time: number;
+  type: 'public' | 'private';
+  player_number: number;
+  created_at: Date;
+  updated_at: Date;
+  state: 'A' | 'D';
+};
+
+export type BlindRoomsType = {
+  blind200: GameRoomType[];
+  blind400: GameRoomType[];
+  blind500: GameRoomType[];
+};
+
+export type BlindRoomsWithTotalType = {
+  blind200: { rooms: GameRoomType[]; total: number };
+  blind400: { rooms: GameRoomType[]; total: number };
+  blind500: { rooms: GameRoomType[]; total: number };
 };
