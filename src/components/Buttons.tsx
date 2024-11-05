@@ -9,7 +9,7 @@ export type Props = {
 export function ColorButton({ children, onClick, filled, className = '', disabled = false }: Props) {
   return (
     <button
-      className={`${className} font-semibold border-2 border-yellow rounded-md ${filled ? `bg-yellow text-white` : 'bg-white text-yellow hover:bg-slate-200'} ${disabled ? 'cursor-default' : 'cursor-pointer'} transition-all px-3 py-0.5`}
+      className={`${className} font-semibold border-2 rounded-md ${filled ? `border-white bg-yellow text-white` : 'border-yellow bg-white text-yellow hover:bg-slate-200'} ${disabled ? 'cursor-default' : 'cursor-pointer'} transition-all px-3 py-0.5`}
       onClick={onClick}
       disabled={disabled}
     >
