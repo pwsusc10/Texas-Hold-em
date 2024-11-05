@@ -11,7 +11,7 @@ export default function NavBar({ currentPage }: Props) {
     <ul className="flex gap-8 p-4 font-semibold text-3xl bg-tertiary rounded-md">
       {navBarList.map((item, index) => (
         <Link key={index} href={item.href}>
-          <p className={`${currentPage === item.href.slice(1) && 'text-yellow'}`}>{item.label}</p>
+          <p className={`${currentPage === item.href.split('/')[1] && 'text-yellow'}`}>{item.label}</p>
         </Link>
       ))}
     </ul>

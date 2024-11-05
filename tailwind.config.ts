@@ -13,6 +13,7 @@ const config: Config = {
         secondary: '#161616',
         tertiary: '#202020',
         quaternary: '#2E2E32',
+        gray: '#6D6D6D',
         yellow: '#AD975F'
       },
       borderColor: {
