@@ -15,7 +15,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={inter.className}>
-      <body className="w-full min-h-screen flex flex-col">
+      <body className="relative w-full min-h-screen flex flex-col">
         <AuthContext>{children}</AuthContext>
       </body>
     </html>

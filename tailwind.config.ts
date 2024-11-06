@@ -6,7 +6,8 @@ const config: Config = {
     extend: {
       colors: {
         yellow: '#AD975F',
-        title: '#E9332F'
+        title: '#E9332F',
+        gray: '#6D6D6D'
       },
       backgroundColor: {
         primary: '#0C0C0C',
