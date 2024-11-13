@@ -4,7 +4,7 @@ import { CircleUserIcon } from '@/components/icons/UserIcon';
 import { useSession } from 'next-auth/react';
 import React from 'react';
 
-export default function page() {
+export default function Page() {
   const { data } = useSession();
 
   if (!data || !data.user)

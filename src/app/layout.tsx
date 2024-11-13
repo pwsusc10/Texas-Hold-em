@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { inter } from './font';
 import AuthContext from '@/context/AuthContext';
+import SWRWrapper from '@/context/SWRWrapper';
 
 export const metadata: Metadata = {
   title: 'H P',
@@ -16,7 +17,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.className}>
       <body className="relative w-full min-h-screen flex flex-col">
-        <AuthContext>{children}</AuthContext>
+        <AuthContext>
+          <SWRWrapper>{children}</SWRWrapper>
+        </AuthContext>
       </body>
     </html>
   );
