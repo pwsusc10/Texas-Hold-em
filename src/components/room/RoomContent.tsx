@@ -1,27 +1,40 @@
 'use client';
-import { initialRoomValue } from '@/lib/initialValue';
+
 import { BlindRoomsWithTotalType } from '@/model';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { ColorButton } from '../Buttons';
 import GameIcon from '../icons/GameIcon';
 import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
 
 export default function RoomContent() {
-  const [publicRooms, setPublicRooms] = useState<BlindRoomsWithTotalType>(initialRoomValue);
   const router = useRouter();
 
-  useEffect(() => {
-    const fetchRoom = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_FRONT_SERVER_URL}/api/game/room`, {
-        method: 'GET'
-      });
+  const { data: publicRooms, isLoading, error } = useSWR<BlindRoomsWithTotalType>(`${process.env.NEXT_PUBLIC_FRONT_SERVER_URL}/api/game/room`);
 
-      const data = await res.json();
-      setPublicRooms(data);
-    };
+  if (isLoading) {
+    <div className="w-2/3 min-h-[75vh] border-4 border-deepdark bg-secondary rounded-md">
+      <div className="w-full h-full flex flex-col p-4">
+        <p className="text-center text-2xl font-semibold">Loading...</p>
+      </div>
+    </div>;
+  } else if (error) {
+    <div className="w-2/3 min-h-[75vh] border-4 border-deepdark bg-secondary rounded-md">
+      <div className="w-full h-full flex flex-col p-4">
+        <p className="text-center text-2xl font-semibold">Error!</p>
+      </div>
+    </div>;
+  }
 
-    fetchRoom();
-  }, []);
+  if (!publicRooms) {
+    return (
+      <div className="w-2/3 min-h-[75vh] border-4 border-deepdark bg-secondary rounded-md">
+        <div className="w-full h-full flex flex-col justify-center items-center p-4">
+          <p className="text-center text-4xl font-semibold">No Rooms</p>
+        </div>
+      </div>
+    );
+  }
 
   const createRoomHandler = () => {
     // TODO: create room
@@ -33,6 +46,7 @@ export default function RoomContent() {
       if (roomId) {
         router.push(`/game/${roomId.id}`);
       } else {
+        // TODO: create room
         alert('방이 꽉 찼습니다.');
       }
     } else if (blind === 'blind400') {

@@ -10,7 +10,7 @@ export function UserIcon({ className = '' }: Props) {
 
 export function CircleUserIcon({ className = '' }: Props) {
   return (
-    <div className="w-full h-full bg-tertiary rounded-full">
+    <div className={`${className} w-full h-full bg-tertiary rounded-full`}>
       <UserIcon className="p-3 text-gray-300" />
     </div>
   );

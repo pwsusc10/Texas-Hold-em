@@ -12,6 +12,6 @@ export async function GET(req: NextRequest) {
   if (result === null) {
     return NextResponse.json({ message: 'User not found' }, { status: 404 });
   } else {
-    return NextResponse.json({ user: result }, { status: 200 });
+    return NextResponse.json({ ...result }, { status: 200 });
   }
 }
