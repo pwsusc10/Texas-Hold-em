@@ -2,7 +2,6 @@ import { JWT } from 'next-auth/jwt';
 
 // 토큰 갱신 함수는 기존과 동일
 export async function refreshAccessToken(token: JWT): Promise<JWT> {
-  console.log('refresh token');
   try {
     let url = '';
     let params = {};

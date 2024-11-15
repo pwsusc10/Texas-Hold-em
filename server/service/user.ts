@@ -8,8 +8,8 @@ export const findUser = async (email: string): Promise<UserType | null> => {
   try {
     const query = "SELECT * FROM `hold'em`.`user` WHERE `email` = ?;";
     const [rows] = await db.execute<RowDataPacket[]>(query, [email]);
-
     const gameLogs = await getUserGameLogIds(rows[0].id);
+
     return { ...rows[0], gameLogs } as UserType;
   } catch (error) {
     console.error('next-auth checkUser function Error: ', error);
@@ -34,14 +34,17 @@ export const getUserGameLogIds = async (userId: number): Promise<HandIdsType | n
   }
 };
 
-export const addUser = async (user: User | AdapterUser): Promise<boolean> => {
+export const addUser = async (user: User | AdapterUser): Promise<number | null> => {
   try {
     const query = "INSERT INTO `hold'em`.`user` (`user_name`, `email`, `profile`, `chips`) VALUES (?, ?, ?, ?);";
-    const [rows] = await db.execute(query, [user.name, user.email, user.image, 0]);
+    await db.execute(query, [user.name, user.email, user.image, 0]);
+    const getIdQuery = "SELECT MAX(id) FROM `hold'em`.user;";
+    const [result] = await db.execute<RowDataPacket[]>(getIdQuery);
+    const { 'MAX(id)': maxId } = result[0];
 
-    return true;
+    return maxId;
   } catch (error) {
     console.error('next-auth addUser function Error: ', error);
-    return false;
+    return null;
   }
 };

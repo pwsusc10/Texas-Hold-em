@@ -37,12 +37,20 @@ const handler = NextAuth({
       const result = await findUser(user.email as string);
       if (!result) {
         // new user
-        return await addUser(user);
+        const result = await addUser(user);
+        if (!result) {
+          return false;
+        } else {
+          user.id = String(result);
+          return true;
+        }
       }
+      user.id = String(result.id);
       return true;
     },
     jwt: async ({ token, account, user }) => {
       if (account) {
+        token.id = user.id;
         token.accessToken = account.access_token;
         token.refreshToken = account.refresh_token;
         token.accessTokenExpires = account.expires_at;
@@ -54,7 +62,14 @@ const handler = NextAuth({
       }
 
       return await refreshAccessToken(token);
-    }
+    },
+    session: async ({ session, token }) => ({
+      ...session,
+      user: {
+        ...session.user,
+        id: token.id
+      }
+    })
   }
 });
 
