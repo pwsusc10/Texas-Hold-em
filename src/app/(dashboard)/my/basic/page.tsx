@@ -1,6 +1,6 @@
 'use client';
-import PencilIcon from '@/components/icons/PencilIcon';
-import { CircleUserIcon } from '@/components/icons/UserIcon';
+import PencilIcon from '@/components/ui/icons/PencilIcon';
+import { CircleUserIcon } from '@/components/ui/icons/UserIcon';
 import { useSession } from 'next-auth/react';
 import React from 'react';
 

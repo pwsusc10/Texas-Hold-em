@@ -3,7 +3,7 @@
 import { BlindRoomsWithTotalType } from '@/model';
 import React from 'react';
 import { ColorButton } from '../Buttons';
-import GameIcon from '../icons/GameIcon';
+import GameIcon from '../ui/icons/GameIcon';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
 
@@ -44,7 +44,8 @@ export default function RoomContent() {
     if (blind === 'blind200') {
       const roomId = publicRooms.blind200.rooms.find(room => room.player_number < 9);
       if (roomId) {
-        router.push(`/game/${roomId.id}`);
+        // router.push(`/game/${roomId.id}`);
+        router.push(`/game/3`);
       } else {
         // TODO: create room
         alert('방이 꽉 찼습니다.');

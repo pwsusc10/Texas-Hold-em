@@ -20,6 +20,7 @@ export default function RootLayout({
         <AuthContext>
           <SWRWrapper>{children}</SWRWrapper>
         </AuthContext>
+        <div id="portal" />
       </body>
     </html>
   );
