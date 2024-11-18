@@ -2,7 +2,9 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { inter } from './font';
 import AuthContext from '@/context/AuthContext';
-import SWRWrapper from '@/context/SWRWrapper';
+import JotaiContext from '@/context/JotaiContext';
+import SWRContext from '@/context/SWRContext';
+import UserProvider from '@/context/UserProvider';
 
 export const metadata: Metadata = {
   title: 'H P',
@@ -17,9 +19,13 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.className}>
       <body className="relative w-full min-h-screen flex flex-col">
-        <AuthContext>
-          <SWRWrapper>{children}</SWRWrapper>
-        </AuthContext>
+        <JotaiContext>
+          <SWRContext>
+            <AuthContext>
+              <UserProvider>{children}</UserProvider>
+            </AuthContext>
+          </SWRContext>
+        </JotaiContext>
         <div id="portal" />
       </body>
     </html>
