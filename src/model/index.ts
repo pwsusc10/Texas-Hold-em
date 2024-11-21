@@ -129,7 +129,7 @@ export type ActionType = {
 };
 
 export type GamePlayerType = UserType & {
-  chips: number;
+  gameChips: number;
   hand: CardType[];
   action: ActionType;
 };

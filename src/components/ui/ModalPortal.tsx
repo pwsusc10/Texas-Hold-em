@@ -4,8 +4,6 @@ import { useEffect, useState } from 'react';
 import { createPortal } from 'react-dom';
 
 export default function ModalPortal({ children }: { children: React.ReactNode }) {
-  if (typeof window === 'undefined') return null;
-
   const [modalRoot, setModalRoot] = useState<HTMLElement | null>(null);
 
   useEffect(() => {
@@ -17,6 +15,7 @@ export default function ModalPortal({ children }: { children: React.ReactNode })
       document.body.style.overflow = 'auto';
     };
   }, []);
+  if (typeof window === 'undefined') return null;
 
   return modalRoot ? createPortal(children, modalRoot) : null;
 }
