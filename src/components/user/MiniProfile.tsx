@@ -1,42 +1,19 @@
 'use client';
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import { CircleUserIcon } from '../ui/icons/UserIcon';
 import Link from 'next/link';
 import CoinIcon from '../ui/icons/CoinIcon';
-import useSWR from 'swr';
-import { UserType } from '@/model';
-import { useSession } from 'next-auth/react';
+import { useAtomValue } from 'jotai';
+import { userAtom } from '@/lib/atom';
 
 export default function MiniProfile() {
-  // user data fetch
-  // login check
-  const { data: user, isLoading, error } = useSWR<UserType>(`${process.env.NEXT_PUBLIC_FRONT_SERVER_URL}/api/me`);
-  const session = useSession();
-  if (!session.data) {
+  const user = useAtomValue(userAtom);
+
+  if (user.id === 0) {
     return (
       <div className="w-1/3 h-fit flex flex-col gap-8 border-4 border-deepdark bg-secondary rounded-md px-4 py-10">
         <p className="text-center text-2xl font-semibold">로그인 후 이용가능</p>
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <div className="w-1/3 h-fit flex flex-col gap-8 border-4 border-deepdark bg-secondary rounded-md px-4 py-10">
-        <p className="text-center text-2xl font-semibold">Loading...</p>
-      </div>
-    );
-  } else if (error) {
-    return (
-      <div className="w-1/3 h-fit flex flex-col gap-8 border-4 border-deepdark bg-secondary rounded-md px-4 py-10">
-        <p className="text-center text-2xl font-semibold">Error!</p>
-      </div>
-    );
-  } else if (!user) {
-    return (
-      <div className="w-1/3 h-fit flex flex-col gap-8 border-4 border-deepdark bg-secondary rounded-md px-4 py-10">
-        <p className="text-center text-2xl font-semibold">Not Found User!</p>
       </div>
     );
   }

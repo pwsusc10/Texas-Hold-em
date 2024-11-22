@@ -4,6 +4,7 @@ import { inter } from './font';
 import AuthContext from '@/context/AuthContext';
 import JotaiContext from '@/context/JotaiContext';
 import SWRContext from '@/context/SWRContext';
+import UserProvider from '@/context/UserProvider';
 
 export const metadata: Metadata = {
   title: 'H P',
@@ -20,7 +21,9 @@ export default function RootLayout({
       <body className="relative w-full min-h-screen flex flex-col">
         <JotaiContext>
           <SWRContext>
-            <AuthContext>{children}</AuthContext>
+            <AuthContext>
+              <UserProvider>{children}</UserProvider>
+            </AuthContext>
           </SWRContext>
         </JotaiContext>
         <div id="portal" />
