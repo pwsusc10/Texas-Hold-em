@@ -37,38 +37,6 @@ export type NavBarItem = {
   label: string;
 };
 
-export type GameRoomType = {
-  id: number;
-  blind: number;
-  time: number;
-  type: 'public' | 'private';
-  seat_1: number | null;
-  seat_2: number | null;
-  seat_3: number | null;
-  seat_4: number | null;
-  seat_5: number | null;
-  seat_6: number | null;
-  seat_7: number | null;
-  seat_8: number | null;
-  seat_9: number | null;
-  player_number: number;
-  created_at: Date;
-  updated_at: Date;
-  state: 'A' | 'D';
-};
-
-export type BlindRoomsType = {
-  blind200: GameRoomType[];
-  blind400: GameRoomType[];
-  blind500: GameRoomType[];
-};
-
-export type BlindRoomsWithTotalType = {
-  blind200: { rooms: GameRoomType[]; total: number };
-  blind400: { rooms: GameRoomType[]; total: number };
-  blind500: { rooms: GameRoomType[]; total: number };
-};
-
 export type CardType =
   | 'As'
   | 'Ad'
@@ -166,3 +134,5 @@ export type GamePlayType = {
     9: GamePlayerType | null;
   };
 };
+
+export type PublicRoomBlind = 200 | 400 | 500;
