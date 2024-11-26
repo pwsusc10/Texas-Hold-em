@@ -10,6 +10,7 @@ import { userAtom } from '@/lib/atom';
 export default function MiniProfile() {
   const user = useAtomValue(userAtom);
 
+  // userAtom이 초기화 되지 않음 (로그인 전)
   if (user.id === 0) {
     return (
       <div className="w-1/3 h-fit flex flex-col gap-8 border-4 border-deepdark bg-secondary rounded-md px-4 py-10">

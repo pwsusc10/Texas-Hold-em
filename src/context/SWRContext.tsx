@@ -17,7 +17,12 @@ export default function SWRContext({ children }: PropsWithChildren) {
         refreshInterval: 60000, // 데이터 자동 갱신 간격 (1분)
         revalidateOnFocus: true, // 포커스 시 자동으로 데이터 리페치
         revalidateOnReconnect: true, // 네트워크 재연결 시 리페치
-        dedupingInterval: 2000 // 중복 요청 방지 간격 (2초)
+        dedupingInterval: 2000, // 중복 요청 방지 간격 (2초)
+        onErrorRetry(err, key, config, revalidate, revalidateOpts) {
+          if (key === `${process.env.NEXT_PUBLIC_FRONT_SERVER_URL}/api/me`) {
+            return;
+          } // 401 error는 retry하지 않음
+        }
       }}
     >
       {children}
