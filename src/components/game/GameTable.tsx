@@ -1,30 +1,25 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+
+import React, { useState } from 'react';
 import SeatButton from './SeatButton';
-import { useSocket } from '@/context/SocketContext';
-import { useSession } from 'next-auth/react';
 import Modal from '../ui/Modal';
 import { BasicButton } from '../Buttons';
-import { useAtom } from 'jotai';
-import { roomAtom, userAtom } from '@/lib/atom';
 import CancelIcon from '../ui/icons/CancelIcon';
-import { GamePlayerType, GamePlayType, GameRoomType } from '@/model';
+import { GamePlayerType, GamePlayType, PlayerNodeType, UserType } from '@/model';
 import { Socket } from 'socket.io-client';
 import GameUser from './GameUser';
-// import { seatPosition } from '@/lib/seatPosition';
 
 type Props = {
   socket: Socket;
+  user: UserType;
   roomId: string;
   room: GamePlayType;
-  setRoom: (room: GamePlayType) => void;
+  seat: number;
+  setSeat: (seat: number) => void;
 };
 
-export default function GameTable({ socket, roomId, room, setRoom }: Props) {
-  const [user, setUser] = useAtom(userAtom);
-  // const [room, setRoom] = useAtom(roomAtom);
+export default function GameTable({ socket, user, roomId, room, seat, setSeat }: Props) {
   const [byIn, setByIn] = useState<number>(room.blind * 30);
-  const [seat, setSeat] = useState<number>(0);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const seatPosition: string[] = [
     'top-full -translate-y-[1rem]',
@@ -54,28 +49,51 @@ export default function GameTable({ socket, roomId, room, setRoom }: Props) {
 
   return (
     <div className="relative w-[30rem] h-[40rem] flex justify-center items-center border-[2rem] border-[#322918] rounded-[12rem] bg-[#97814B]">
-      {Array.from({ length: 9 }).map((_, i) => (
-        <div key={i} id={String(i + 1)} className={`absolute  ${seatPosition[i]}`}>
-          {room.seat[(i + 1) as keyof typeof room.seat] ? (
-            <GameUser user={room.seat[(i + 1) as keyof typeof room.seat] as GamePlayerType} />
-          ) : (
-            <SeatButton onClick={() => seatHandler(i + 1)} className="hover:cursor-pointer hover:scale-105" />
-          )}
-        </div>
-      ))}
+      {Array.from({ length: 9 }).map((_, i) => {
+        const seatNumber = i; // 0부터 8까지의 좌석 번호
+        let current = room.playerList.head; // playerList의 시작점
+        let player: GamePlayerType | null = null;
+
+        if (!current) {
+          return (
+            <div key={seatNumber} id={`seat-${seatNumber}`} className={`absolute ${seatPosition[i]}`}>
+              <SeatButton onClick={() => seatHandler(seatNumber)} className="hover:cursor-pointer hover:scale-105" />
+            </div>
+          );
+        }
+        // 연결 리스트 순회하여 현재 좌석에 해당하는 플레이어 검색
+        while (current !== null) {
+          if (current.seat === seatNumber) {
+            player = current.player; // 해당 좌석의 플레이어 정보 가져오기
+            break;
+          }
+          current = current.next as PlayerNodeType;
+        }
+
+        return (
+          <div key={seatNumber} id={`seat-${seatNumber}`} className={`absolute ${seatPosition[i]}`}>
+            {player ? (
+              <GameUser player={player} user={user} positionIndex={i} seat={seat} game={room} />
+            ) : (
+              <SeatButton onClick={() => seatHandler(seatNumber)} className="hover:cursor-pointer hover:scale-105" />
+            )}
+          </div>
+        );
+      })}
       <section className="w-2/3 h-3/4 flex flex-col items-center border-2 border-white rounded-[8rem] bg-[#B99D55]">
         <div className=" flex flex-col items-center gap-2">
           {/* chips */}
           <div>chips animation</div>
           <div className="px-4 py-2 flex justify-center items-center rounded-3xl bg-black opacity-50">
-            <p>{room.pot.current}C</p>
+            <p>{room.pot.main.current}C</p>
           </div>
           <div className="w-[9rem] h-[4rem] flex flex-col justify-center items-center rounded-xl bg-black opacity-50">
             <p>POT</p>
-            <p>{room.pot.total}C</p>
+            <p>{room.pot.main.total}C</p>
           </div>
-          <p>
-            SB: {room.blind / 2}C / BB: {room.blind}C
+          <p className="text-center">
+            SB: {room.blind / 2}C / BB: {room.blind}C<br />
+            Time: {room.time}s
           </p>
         </div>
         <div className="">board</div>

@@ -67,7 +67,7 @@ export default function RoomsContainer() {
       return;
     }
 
-    const room = rooms.find(room => room.blind === blind && room.playerNumber < 9);
+    const room = rooms.find(room => room.blind === blind && room.playerList.length < 9);
     if (room) {
       router.push(`/game/${room.roomId}`);
     } else {

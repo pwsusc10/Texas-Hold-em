@@ -9,7 +9,7 @@ type Props = {
 export default function ActionPreview({ action, isWin }: Props) {
   const getColor = (action: ActionType) => {
     if (isWin) {
-      return 'border-gold text-gold';
+      return 'border-gold text-gold z-40';
     }
     switch (action.type) {
       case 'bet':

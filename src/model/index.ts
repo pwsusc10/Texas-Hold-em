@@ -11,21 +11,6 @@ export type UserType = {
   state: 'A' | 'D';
 };
 
-export type GameRoomsType = {
-  blind200: {
-    rooms: GamePlayType[];
-    total: number;
-  };
-  blind400: {
-    rooms: GamePlayType[];
-    total: number;
-  };
-  blind500: {
-    rooms: GamePlayType[];
-    total: number;
-  };
-};
-
 export type HandIdsType = {
   total: number;
   logIds: number[];
@@ -93,13 +78,21 @@ export type CardType =
 
 export type ActionType = {
   amount: number;
-  type: 'wait' | 'fold' | 'bet' | 'check' | 'call' | 'raise' | 're-raise' | 'all-in';
+  type: 'yet' | 'sb' | 'bb' | 'fold' | 'bet' | 'check' | 'call' | 'raise' | 're-raise' | 'all-in';
 };
 
 export type GamePlayerType = UserType & {
   gameChips: number;
   hand: CardType[];
+  status: 'play' | 'away' | 'wait'; // 게임 진행, 자리 비움, 대기
   action: ActionType;
+};
+
+export type PublicRoomBlind = 200 | 400 | 500;
+
+export type SidePotType = {
+  total: number;
+  player: PlayerNodeType;
 };
 
 export type GamePlayType = {
@@ -109,30 +102,34 @@ export type GamePlayType = {
   time: number;
   type: 'public' | 'private';
   phase: 'preFlop' | 'flop' | 'turn' | 'river' | 'showdown';
-  pot: {
-    total: number;
-    current: number;
-  };
-  position: {
-    dealer: number;
-    bb: number;
-    sb: number;
-    turn: number;
-    nextTurn: number;
-  };
   board: CardType[];
-  playerNumber: number;
-  seat: {
-    1: GamePlayerType | null;
-    2: GamePlayerType | null;
-    3: GamePlayerType | null;
-    4: GamePlayerType | null;
-    5: GamePlayerType | null;
-    6: GamePlayerType | null;
-    7: GamePlayerType | null;
-    8: GamePlayerType | null;
-    9: GamePlayerType | null;
+  pot: {
+    main: {
+      total: number;
+      current: number;
+    };
+    side: SidePotType[];
   };
+  currentBet: PlayerNodeType;
+  position: {
+    dealer: PlayerNodeType;
+    bb: PlayerNodeType;
+    sb: PlayerNodeType;
+    turn: PlayerNodeType;
+  };
+  winners: SidePotType[];
+  playerList: PlayerListType;
 };
 
-export type PublicRoomBlind = 200 | 400 | 500;
+export type PlayerNodeType = {
+  player: GamePlayerType;
+  seat: number;
+  next: PlayerNodeType | null;
+};
+
+export type PlayerListType = {
+  head: PlayerNodeType | null;
+  length: number;
+};
+
+export type ChipValueType = 100 | 1000 | 5000 | 10000 | 100000;

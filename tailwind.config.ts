@@ -11,6 +11,7 @@ const config: Config = {
     extend: {
       colors: {
         yellow: '#AD975F',
+        gold: '#B99D55',
         title: '#E9332F',
         gray: '#6D6D6D',
         lightGreen: '#B5DAB9'

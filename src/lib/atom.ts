@@ -1,5 +1,6 @@
-import { UserType } from '@/model';
+import { GamePlayType, UserType } from '@/model';
 import { atom } from 'jotai';
+import { initialGamePlayValue } from './initialValue';
 
 export const userAtom = atom<UserType>({
   id: 0,
@@ -12,3 +13,5 @@ export const userAtom = atom<UserType>({
   updated_at: new Date(),
   state: 'A'
 });
+
+export const gamePlayAtom = atom<GamePlayType>(initialGamePlayValue);

@@ -29,3 +29,22 @@ export function BasicButton({ children, onClick, className = '', disabled = fals
     </button>
   );
 }
+
+type CustomButtonProps = {
+  children: React.ReactNode;
+  onClick: () => void;
+  className?: string;
+  disabled?: boolean;
+};
+
+export const CustomButton = ({ children, onClick, className = '', disabled = false }: CustomButtonProps) => {
+  return (
+    <button
+      className={`w-[5rem] text-center text-sm py-2.5 font-semibold border rounded-md hover:bg-tertiary hover:scale-105 transition-all ${className}`}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      {children}
+    </button>
+  );
+};
