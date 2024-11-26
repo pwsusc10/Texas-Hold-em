@@ -12,7 +12,8 @@ const config: Config = {
       colors: {
         yellow: '#AD975F',
         title: '#E9332F',
-        gray: '#6D6D6D'
+        gray: '#6D6D6D',
+        lightGreen: '#B5DAB9'
       },
       backgroundColor: {
         primary: '#0C0C0C',
