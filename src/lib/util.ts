@@ -39,7 +39,7 @@ export const didWin = ({ user, game }: { user: UserType; game: GamePlayType }) =
   const result = game.winners.find(winner => winner.player.player.id === user.id);
 
   if (result) {
-    return { result: true, amount: game.pot.main.total + game.pot.main.current - result.total };
+    return { result: true, amount: result.total };
   } else {
     return { result: false, amount: 0 };
   }
