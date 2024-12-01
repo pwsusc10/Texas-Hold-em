@@ -24,7 +24,7 @@ export default function MiniProfile() {
       <div className="flex justify-evenly items-center">
         <div className="flex flex-col items-center gap-[2rem]">
           <p className="text-3xl">{user.user_name}</p>
-          <p className="text-lg">핸드 : {user.gameLogs.total}</p>
+          <p className="text-lg">핸드 : {user.gameLogs ? user.gameLogs.total : 0}</p>
         </div>
         {/* TODO: userProfile */}
         <div className="w-[6rem] h-[6rem] bg-tertiary rounded-full">
@@ -36,7 +36,7 @@ export default function MiniProfile() {
           <CoinIcon />
         </div>
         <p className="text-2xl">{user.chips} c</p>
-        <Link href="/my" className="h-fit border-2 border-white rounded-md bg-yellow py-3 px-2 text-xl font-semibold">
+        <Link href="/my/log" className="h-fit border-2 border-white rounded-md bg-yellow py-3 px-2 text-xl font-semibold">
           상세보기
         </Link>
       </div>

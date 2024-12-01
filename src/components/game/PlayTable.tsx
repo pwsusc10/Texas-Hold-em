@@ -4,7 +4,6 @@ import { GamePlayerType, GamePlayType, PlayerNodeType, UserType } from '@/model'
 import SeatButton from './SeatButton';
 import { Socket } from 'socket.io-client';
 import Card from '../ui/card';
-import { initialPlayer } from '@/lib/initialValue';
 import ActionButtonList from './ActionButtonList';
 import Chips from '../ui/Chips';
 import { boardOpen, getBoardOpen } from '@/lib/util';
