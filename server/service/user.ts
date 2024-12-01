@@ -10,9 +10,9 @@ export const findUser = async (email: string): Promise<UserType | null> => {
     connection = await db.getConnection();
     const query = "SELECT * FROM `hold'em`.`user` WHERE `email` = ?;";
     const [rows] = await connection.execute<RowDataPacket[]>(query, [email]);
-    const gameLogs = await getUserGameLogIds(rows[0].id);
+    // const gameLogs = await getUserGameLogIds(rows[0].id);
 
-    return { ...rows[0], gameLogs } as UserType;
+    return { ...rows[0] } as UserType;
   } catch (error) {
     console.error('next-auth checkUser function Error: ', error);
     return null;

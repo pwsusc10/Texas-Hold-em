@@ -3,6 +3,7 @@ import GoogleProvider from 'next-auth/providers/google';
 import KakaoProvider from 'next-auth/providers/kakao';
 import { addUser, findUser } from '../../../../../server/service/user';
 import { refreshAccessToken } from '../../../../../server/service/jwt';
+import { UserType } from '@/model';
 
 const handler = NextAuth({
   providers: [
@@ -34,8 +35,8 @@ const handler = NextAuth({
   },
   callbacks: {
     signIn: async ({ user, account, profile }) => {
-      const result = await findUser(user.email as string);
-      if (!result) {
+      const result = (await findUser(user.email as string)) as UserType;
+      if (Object.keys(result).length === 0) {
         // new user
         const result = await addUser(user);
         if (!result) {
