@@ -76,12 +76,12 @@ export default function RoomsContainer() {
   };
 
   return (
-    <div className="w-2/3 min-h-[75vh] border-4 border-deepdark bg-secondary rounded-md">
-      <div className="w-full h-full flex flex-col p-4 gap-4">
+    <div className="w-2/3 border-4 border-deepdark bg-secondary rounded-md min-h-[55vh] sm:min-h-[65vh] md:min-h-[75vh]">
+      <div className="w-full h-full max-h-[60vh] flex flex-col p-4 gap-4 overflow-y-auto">
         <ColorButton onClick={() => setIsCreateRoomModalOpen(true)} filled className="w-fit self-end">
           방 생성
         </ColorButton>
-        <div className="grid grid-cols-3 gap-8 ">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
           {publicRoomsBlind.map((blind, index) => (
             <div
               key={index}
@@ -99,15 +99,16 @@ export default function RoomsContainer() {
           ))}
         </div>
       </div>
+
       {isCreateRoomModalOpen && (
         <Modal size="lg">
-          <div className="relative w-full h-full flex flex-col justify-between items-center p-[2rem]">
+          <div className="relative w-full h-full flex flex-col justify-between items-center p-[1rem] sm:p-[2rem] whitespace-nowrap">
             <div className="absolute top-2 right-2" onClick={() => setIsCreateRoomModalOpen(false)}>
               <CancelIcon className="hover:cursor-pointer hover:scale-110" size={24} />
             </div>
-            <div className="text-3xl font-semibold">방 생성하기</div>
-            <div className="w-1/2 flex justify-between">
-              <p className="text-2xl font-semibold">Big Blind</p>
+            <div className="text-xl sm:text-2xl md:text-3xl font-semibold">방 생성하기</div>
+            <div className="flex justify-between gap-2 sm:gap-4">
+              <p className="text-base sm:text-xl md:text-2xl font-semibold ">Big Blind</p>
               <DropDown
                 placeholder="-"
                 options={blindList}
@@ -117,8 +118,8 @@ export default function RoomsContainer() {
                 renderOption={(option: number) => <p>{option}</p>}
               />
             </div>
-            <div className="w-1/2 flex justify-between">
-              <p className="text-2xl font-semibold">배팅 시간</p>
+            <div className="flex justify-between gap-2 sm:gap-4">
+              <p className="text-base sm:text-xl md:text-2xl font-semibold">배팅 시간</p>
               <DropDown
                 placeholder="-"
                 options={timeList}
@@ -128,7 +129,7 @@ export default function RoomsContainer() {
                 renderOption={(option: number) => <p>{option}</p>}
               />
             </div>
-            <ColorButton onClick={() => createRoomHandler()} filled className="self-end w-fit h-[3rem] text-xl">
+            <ColorButton onClick={() => createRoomHandler()} filled className="self-end w-fit h-[2rem] sm:h-[3rem] text-base sm:text-xl">
               방 생성
             </ColorButton>
           </div>

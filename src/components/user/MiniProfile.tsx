@@ -38,7 +38,7 @@ export default function MiniProfile() {
           </div>
           <p className="text-base sm:text-xl md:text-2xl whitespace-nowrap">{user.chips} c</p>
         </div>
-        <Link href="/my/log" className="h-fit border-2 border-white rounded-md bg-yellow py-3 px-2 font-semibold text-sm sm:text-base">
+        <Link href="/my/log" className="h-fit border-2 border-white rounded-md bg-yellow font-semibold text-sm sm:text-base px-1 py-1.5  sm:px-2 sm:py-3">
           상세보기
         </Link>
       </div>
