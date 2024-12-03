@@ -22,22 +22,22 @@ export default function Page() {
 
   const modifyHandler = () => {};
   return (
-    <ul className="w-4/5 mx-auto">
-      <li className="flex items-center border-b h-[5rem] p-4">
-        <p className="w-1/5">프로필 사진</p>
+    <ul className="w-4/5 mx-auto whitespace-nowrap text-xs sm:text-sm md:text-base">
+      <li className="flex items-center border-b h-[3rem] sm:h-[4rem] md:h-[5rem] p-2 sm:p-3 md:p-4">
+        <p className="w-1/5">프로필</p>
         {data.user.image ? <p className="grow">프로필 사진을 변경해보세요.</p> : <p>프로필 사진을 추가해보세요.</p>}
         <div className="h-full hover:scale-110 hover:cursor-pointer" onClick={() => setModalState('profile')}>
           <CircleUserIcon />
         </div>
       </li>
-      <li className="flex items-center border-b h-[5rem] p-4">
+      <li className="flex items-center border-b h-[3rem] sm:h-[4rem] md:h-[5rem] p-2 sm:p-3 md:p-4">
         <p className="w-1/5">닉네임</p>
         <p className="grow">{data.user.name}</p>
         <div className="h-full p-1 hover:scale-110 hover:cursor-pointer" onClick={() => setModalState('nickname')}>
           <PencilIcon />
         </div>
       </li>
-      <li className="flex items-center border-b h-[5rem] p-4">
+      <li className="flex items-center border-b h-[3rem] sm:h-[4rem] md:h-[5rem] p-2 sm:p-3 md:p-4">
         <p className="w-1/5">이메일</p>
         <p className="grow">{data.user.email}</p>
       </li>
