@@ -8,7 +8,7 @@ export default function AuthButton() {
   const { data: session, status } = useSession();
 
   return (
-    <div className="text-2xl">
+    <div className="text-base sm:text-lg  md:text-2xl">
       {status === 'authenticated' ? (
         <BasicButton
           onClick={() => {
