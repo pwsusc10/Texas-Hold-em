@@ -5,6 +5,7 @@ import AuthContext from '@/context/AuthContext';
 import JotaiContext from '@/context/JotaiContext';
 import SWRContext from '@/context/SWRContext';
 import UserProvider from '@/context/UserProvider';
+import SWContext from '@/context/SWContext';
 
 export const metadata: Metadata = {
   title: 'H P',
@@ -29,7 +30,9 @@ export default function RootLayout({
         <JotaiContext>
           <SWRContext>
             <AuthContext>
-              <UserProvider>{children}</UserProvider>
+              <UserProvider>
+                <SWContext>{children}</SWContext>
+              </UserProvider>
             </AuthContext>
           </SWRContext>
         </JotaiContext>
