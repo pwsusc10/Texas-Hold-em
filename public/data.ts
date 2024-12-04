@@ -1,3 +1,4 @@
+import { initialPlayerNode } from '@/lib/initialValue';
 import { GamePlayerType, GamePlayType, UserType } from '@/model';
 export const UserData: GamePlayerType[] = [
   {
@@ -12,9 +13,10 @@ export const UserData: GamePlayerType[] = [
     state: 'A',
     gameChips: 1000,
     hand: [],
+    status: 'wait',
     action: {
-      amount: 0,
-      type: 'wait'
+      amount: -1,
+      type: 'yet'
     }
   },
   {
@@ -29,6 +31,7 @@ export const UserData: GamePlayerType[] = [
     state: 'A',
     gameChips: 1000,
     hand: [],
+    status: 'wait',
     action: {
       amount: 0,
       type: 'fold'
@@ -44,29 +47,25 @@ export const RoomListData: GamePlayType[] = [
     time: 15,
     type: 'public',
     phase: 'preFlop',
-    playerNumber: 2,
     pot: {
-      total: 0,
-      current: 0
+      main: {
+        total: 0,
+        current: 0
+      },
+      side: []
     },
+    currentBet: initialPlayerNode,
     position: {
-      dealer: 0,
-      bb: 0,
-      sb: 0,
-      turn: 0,
-      nextTurn: 0
+      dealer: initialPlayerNode,
+      bb: initialPlayerNode,
+      sb: initialPlayerNode,
+      turn: initialPlayerNode
     },
     board: [],
-    seat: {
-      1: null,
-      2: null,
-      3: null,
-      4: null,
-      5: null,
-      6: null,
-      7: null,
-      8: null,
-      9: null
+    winners: [],
+    playerList: {
+      head: null,
+      length: 0
     }
   }
 ];
