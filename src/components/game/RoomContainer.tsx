@@ -118,7 +118,7 @@ export default function RoomContainer({ roomId }: Props) {
 
   return (
     <div className="flex flex-col justify-center items-center">
-      <div className="self-end w-[2rem] m-[2rem] text-gray hover:scale-110 hover:cursor-pointer">
+      <div className="self-end w-[2rem] m-[1rem] sm:m-[2rem] text-gray hover:scale-110 hover:cursor-pointer">
         <RoomOutIcon roomId={roomId} />
       </div>
       {isSeat ? (

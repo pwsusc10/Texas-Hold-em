@@ -1,6 +1,6 @@
 import { calculateChips } from '@/lib/util';
 import React, { useEffect, useState } from 'react';
-import { AnimatePresence, motion } from 'framer-motion';
+import { motion } from 'framer-motion';
 import Image from 'next/image';
 
 type Props = {
@@ -26,22 +26,24 @@ export default function Chips({ amount }: Props) {
   );
 
   return (
-    <div className="flex gap-0">
-      {Object.entries(groupedChips).map(([chipValue, chips], colIndex) => (
-        <div key={colIndex} className="relative w-3">
-          {chips.map((chip, index) => (
-            <motion.div
-              key={index}
-              initial={{ opacity: 0 }}
-              animate={{ y: -index * 2, opacity: 1 }}
-              transition={{ duration: 1, delay: index * 0.1 }}
-              className="absolute top-0"
-            >
-              <Image src={`/images/chips/chip-${chip}.png`} width={16} height={16} alt="chip" />
-            </motion.div>
-          ))}
-        </div>
-      ))}
+    <div className="relative w-full h-[1rem]">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 flex gap-0">
+        {Object.entries(groupedChips).map(([chipValue, chips], colIndex) => (
+          <div key={colIndex} className="relative w-3">
+            {chips.map((chip, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0 }}
+                animate={{ y: -index * 2, opacity: 1 }}
+                transition={{ duration: 1, delay: index * 0.1 }}
+                className="absolute top-0"
+              >
+                <Image src={`/images/chips/chip-${chip}.png`} width={16} height={16} alt="chip" />
+              </motion.div>
+            ))}
+          </div>
+        ))}
+      </div>
     </div>
   );
 }

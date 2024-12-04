@@ -13,11 +13,21 @@ type Props = {
   user: UserType;
   roomId: string;
   room: GamePlayType;
-  // setRoom: (room: GamePlayType) => void;
   seat: number;
 };
 
 export default function PlayTable({ socket, user, roomId, room, seat }: Props) {
+  const seatPosition: string[] = [
+    'top-full -translate-y-[1rem]',
+    'bottom-0 right-full translate-x-1/4 -translate-y-1/2',
+    'top-1/2 right-full translate-x-1/4 -translate-y-1/2',
+    'top-0 right-full translate-x-1/4 translate-y-1/2',
+    'top-0 left-1/2 translate-x-1/4 sm:translate-x-1/2 md:translate-x-full -translate-y-3/4',
+    'top-0 right-1/2 -translate-x-1/4 sm:-translate-x-1/2 md:-translate-x-full -translate-y-3/4',
+    'top-0 left-full -translate-x-1/4 translate-y-1/2',
+    'top-1/2 left-full -translate-x-1/4 -translate-y-1/2',
+    'bottom-0 left-full -translate-x-1/4 -translate-y-1/2'
+  ];
   useEffect(() => {
     return () => {
       // 게임 진행중일때 자리 비움.
@@ -26,20 +36,9 @@ export default function PlayTable({ socket, user, roomId, room, seat }: Props) {
     };
   }, []);
 
-  const seatPosition: string[] = [
-    'top-full -translate-y-[1rem]',
-    'top-1/2 right-full translate-x-[1rem] translate-y-[7rem]',
-    'top-1/2 right-full translate-x-[1rem] -translate-y-[3rem]',
-    'top-1/2 right-full translate-x-[1rem] -translate-y-[13rem]',
-    'top-0 -translate-x-[6rem] -translate-y-[4rem]',
-    'top-0 translate-x-[6rem] -translate-y-[4rem]',
-    'top-1/2 left-full -translate-x-[1rem] -translate-y-[13rem]',
-    'top-1/2 left-full -translate-x-[1rem] -translate-y-[3rem]',
-    'top-1/2 left-full -translate-x-[1rem] translate-y-[7rem]'
-  ];
   return (
     <>
-      <div className="relative w-[28rem] h-[32rem] flex justify-center items-center border-[2rem] border-[#322918] rounded-[12rem] bg-[#97814B] mb-[4rem]">
+      <div className="relative w-2/3 mx-auto h-[60vh] flex justify-center items-center border-[0.5rem] sm:border-[1rem] border-[#322918] rounded-[5rem] sm:rounded-[7rem] bg-[#97814B] mb-[4rem]">
         {Array.from({ length: 9 }).map((_, i) => {
           const seatNumber = (i + seat) % 9; // 1부터 9까지의 좌석 번호
           let current = room.playerList.head; // playerList의 시작점
@@ -67,19 +66,18 @@ export default function PlayTable({ socket, user, roomId, room, seat }: Props) {
             </div>
           );
         })}
-        <section className="w-2/3 h-3/4 flex flex-col gap-2 items-center border-2 border-white rounded-[8rem] bg-[#B99D55]">
-          <div className="flex flex-col items-center gap-2">
+        <section className="w-3/4 h-4/5 flex flex-col items-center border-2 border-white rounded-xl bg-[#B99D55]">
+          <div className="flex flex-col items-center gap-2 text-xs sm:text-sm md:text-base">
             <Chips amount={room.pot.main.current} />
-            <div className="px-4 py-1 text-center rounded-3xl bg-black opacity-50 text-sm">
+            <div className="p-2 flex justify-center items-center rounded-xl bg-black opacity-50">
               <p>{room.pot.main.current}C</p>
             </div>
-            <div className="w-[9rem] h-[4rem] flex flex-col justify-center items-center rounded-xl bg-black opacity-50">
+            <div className="w-2/3 p-2 flex flex-col justify-center items-center rounded-xl bg-black opacity-50 gap-2">
               <p>POT</p>
               <p>{room.pot.main.total}C</p>
             </div>
-            <p className="text-center text-xs">
-              SB / BB : {room.blind / 2} / {room.blind}
-              <br />
+            <p className="text-center">
+              SB: {room.blind / 2}C / BB: {room.blind}C<br />
               Time: {room.time}s
             </p>
           </div>
