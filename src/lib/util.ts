@@ -1,21 +1,11 @@
-import { ChipValueType, UserType } from './../model/index';
-import { GamePlayType, PublicRoomBlind } from '@/model';
+import { ChipValueType, GamePlayType, PublicRoomBlind, UserType } from '@/model';
 
 export const publicRoomsBlind: PublicRoomBlind[] = [200, 400, 500];
 const chipValues: ChipValueType[] = [100000, 10000, 5000, 1000, 100];
-// const chipValues: ChipValueType[] = [100, 500, 1000, 5000, 10000];
 
-export const boardOpen = [
-  [false, false, false, false, false],
-  [true, true, true, false, false],
-  [true, true, true, true, false],
-  [true, true, true, true, true]
-];
+const openBoardCards: Record<GamePlayType['phase'], number> = { preFlop: 0, flop: 3, turn: 4, river: 5, showdown: 5 };
 
-export const getBoardOpen = (room: GamePlayType) => {
-  const boardOpenList = room.phase === 'preFlop' ? boardOpen[0] : room.phase === 'flop' ? boardOpen[1] : room.phase === 'turn' ? boardOpen[2] : boardOpen[3];
-  return boardOpenList;
-};
+export const getBoardOpen = (room: GamePlayType): boolean[] => Array.from({ length: 5 }, (_, i) => i < openBoardCards[room.phase]);
 
 export const calculateChips = (amount: number): number[] => {
   const chips: number[] = [];
@@ -27,12 +17,6 @@ export const calculateChips = (amount: number): number[] => {
     }
   }
   return chips;
-};
-
-export const playFunctionAfterAnimation = ({ func, duration }: { func: () => void; duration: number }) => {
-  setTimeout(() => {
-    func();
-  }, duration);
 };
 
 export const didWin = ({ user, game }: { user: UserType; game: GamePlayType }) => {

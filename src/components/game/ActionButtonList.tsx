@@ -1,6 +1,6 @@
 import { ActionType, GamePlayerType, GamePlayType, PlayerNodeType } from '@/model';
-import React, { useRef } from 'react';
-import { ColorButton, CustomButton } from '../Buttons';
+import React from 'react';
+import { CustomButton } from '../Buttons';
 import { Socket } from 'socket.io-client';
 
 type Props = {
@@ -10,172 +10,83 @@ type Props = {
   user: GamePlayerType;
 };
 
-export default function ActionButtonList({ socket, game, prevBet, user }: Props) {
-  const hasClicked = useRef(false);
-  const actionHandler = ({ action }: { action: ActionType }) => {
-    console.log('action button clicked : ', action.type, action.amount);
-    if ((prevBet.player.action.type === 'raise' || prevBet.player.action.type === 're-raise') && action.type === 'raise') {
-      socket.emit('bet', { roomId: game.roomId, user, action: { amount: action.amount, type: 're-raise' } });
-    } else {
-      socket.emit('bet', { roomId: game.roomId, user, action });
+type ActionOption = {
+  label: string;
+  action: ActionType;
+  tone: string;
+};
+
+const TONE = {
+  fold: 'border-title text-title bg-quaternary',
+  passive: 'border-yellow text-yellow bg-quaternary',
+  raise: 'border-lightGreen text-lightGreen bg-quaternary'
+};
+
+const RAISE_MULTIPLIERS = [2, 2.5, 3, 3.5];
+
+const POT_BETS = [
+  { label: '1/4 Pot', numerator: 1, denominator: 4, atLeastBlind: true },
+  { label: '1/2 Pot', numerator: 1, denominator: 2 },
+  { label: '3/4 Pot', numerator: 3, denominator: 4 },
+  { label: '1x Pot', numerator: 1, denominator: 1 },
+  { label: '5/4 Pot', numerator: 5, denominator: 4 }
+];
+
+/** Buttons offered when an earlier player has already put chips in this street. */
+const facingBetOptions = (toCall: number, user: GamePlayerType): ActionOption[] => {
+  const chips = user.gameChips;
+  const passive = user.action.type === 'bb' ? 'check' : 'call';
+  const options: ActionOption[] = [{ label: 'FOLD', action: { amount: 0, type: 'fold' }, tone: TONE.fold }];
+
+  if (toCall < chips) {
+    options.push({ label: passive.toUpperCase(), action: { amount: toCall, type: passive }, tone: TONE.passive });
+  }
+  for (const multiplier of RAISE_MULTIPLIERS) {
+    const amount = Math.floor(toCall * multiplier);
+    if (toCall * multiplier < chips) {
+      options.push({ label: `${multiplier}x Raise`, action: { amount, type: 'raise' }, tone: TONE.raise });
     }
+  }
+  if (chips > 0 && chips < toCall * 3) {
+    options.push({ label: 'ALL-IN', action: { amount: chips, type: 'all-in' }, tone: TONE.raise });
+  }
+  return options;
+};
+
+/** Buttons offered when nobody has bet yet this street. */
+const openingOptions = (game: GamePlayType, user: GamePlayerType): ActionOption[] => {
+  const pot = game.pot.main.total;
+  const chips = user.gameChips;
+  const options: ActionOption[] = [{ label: 'CHECK', action: { amount: 0, type: 'check' }, tone: TONE.passive }];
+
+  for (const { label, numerator, denominator, atLeastBlind } of POT_BETS) {
+    const amount = Math.floor((numerator * pot) / denominator);
+    if (amount < chips && !(atLeastBlind && amount < game.blind)) {
+      options.push({ label, action: { amount, type: 'bet' }, tone: TONE.passive });
+    }
+  }
+  if ((3 * pot) / 2 >= chips) {
+    options.push({ label: 'ALL-IN', action: { amount: chips, type: 'bet' }, tone: TONE.fold });
+  }
+  return options;
+};
+
+export default function ActionButtonList({ socket, game, prevBet, user }: Props) {
+  const toCall = prevBet.player.action.amount;
+  const options = toCall > 0 ? facingBetOptions(toCall, user) : openingOptions(game, user);
+
+  const emitAction = (action: ActionType) => {
+    const isReRaise = action.type === 'raise' && (prevBet.player.action.type === 'raise' || prevBet.player.action.type === 're-raise');
+    socket.emit('bet', { roomId: game.roomId, user, action: isReRaise ? { amount: action.amount, type: 're-raise' } : action });
   };
 
   return (
     <div className="flex gap-1">
-      {prevBet.player.action.amount > 0 ? (
-        <>
-          <CustomButton
-            onClick={() => {
-              actionHandler({ action: { amount: 0, type: 'fold' } });
-            }}
-            disabled={hasClicked.current}
-            className="border-title text-title bg-quaternary"
-          >
-            FOLD
-          </CustomButton>
-          {prevBet.player.action.amount < user.gameChips && (
-            <CustomButton
-              onClick={() => {
-                {
-                  user.action.type === 'bb'
-                    ? actionHandler({ action: { amount: prevBet.player.action.amount, type: 'check' } })
-                    : actionHandler({ action: { amount: prevBet.player.action.amount, type: 'call' } });
-                }
-              }}
-              disabled={hasClicked.current}
-              className="border-yellow text-yellow bg-quaternary"
-            >
-              {user.action.type === 'bb' ? 'CHECK' : 'CALL'}
-            </CustomButton>
-          )}
-          {prevBet.player.action.amount * 2 < user.gameChips && (
-            <CustomButton
-              onClick={() => {
-                actionHandler({ action: { amount: prevBet.player.action.amount * 2, type: 'raise' } });
-              }}
-              disabled={hasClicked.current}
-              className="border-lightGreen text-lightGreen bg-quaternary"
-            >
-              2x Raise
-            </CustomButton>
-          )}
-          {prevBet.player.action.amount * 2.5 < user.gameChips && (
-            <CustomButton
-              onClick={() => {
-                actionHandler({ action: { amount: Math.floor(prevBet.player.action.amount * 2.5), type: 'raise' } });
-              }}
-              disabled={hasClicked.current}
-              className="border-lightGreen text-lightGreen bg-quaternary"
-            >
-              2.5x Raise
-            </CustomButton>
-          )}
-          {prevBet.player.action.amount * 3 < user.gameChips && (
-            <CustomButton
-              onClick={() => {
-                actionHandler({ action: { amount: prevBet.player.action.amount * 3, type: 'raise' } });
-              }}
-              disabled={hasClicked.current}
-              className="border-lightGreen text-lightGreen bg-quaternary"
-            >
-              3x Raise
-            </CustomButton>
-          )}
-          {prevBet.player.action.amount * 3.5 < user.gameChips && (
-            <CustomButton
-              onClick={() => actionHandler({ action: { amount: Math.floor(prevBet.player.action.amount * 3.5), type: 'raise' } })}
-              disabled={hasClicked.current}
-              className="border-lightGreen text-lightGreen bg-quaternary"
-            >
-              3.5x Raise
-            </CustomButton>
-          )}
-          {user.gameChips > 0 && user.gameChips < prevBet.player.action.amount * 3 && (
-            <CustomButton
-              onClick={() => actionHandler({ action: { amount: user.gameChips, type: 'all-in' } })}
-              className="border-lightGreen text-lightGreen bg-quaternary"
-              disabled={hasClicked.current}
-            >
-              ALL-IN
-            </CustomButton>
-          )}
-        </>
-      ) : (
-        <>
-          <CustomButton
-            onClick={() => {
-              actionHandler({ action: { amount: 0, type: 'check' } });
-            }}
-            disabled={hasClicked.current}
-            className="border-yellow text-yellow bg-quaternary"
-          >
-            CHECK
-          </CustomButton>
-          {Math.floor(game.pot.main.total / 4) >= game.blind && Math.floor(game.pot.main.total / 4) < user.gameChips && (
-            <CustomButton
-              onClick={() => {
-                actionHandler({ action: { amount: Math.floor(game.pot.main.total / 4), type: 'bet' } });
-              }}
-              disabled={hasClicked.current}
-              className="border-yellow text-yellow bg-quaternary"
-            >
-              1/4 Pot
-            </CustomButton>
-          )}
-          {Math.floor(game.pot.main.total / 2) < user.gameChips && (
-            <CustomButton
-              onClick={() => {
-                actionHandler({ action: { amount: Math.floor(game.pot.main.total / 2), type: 'bet' } });
-              }}
-              disabled={hasClicked.current}
-              className="border-yellow text-yellow bg-quaternary"
-            >
-              1/2 Pot
-            </CustomButton>
-          )}
-          {(3 * game.pot.main.total) / 4 < user.gameChips && (
-            <CustomButton
-              onClick={() => {
-                actionHandler({ action: { amount: Math.floor((3 * game.pot.main.total) / 4), type: 'bet' } });
-              }}
-              className="border-yellow text-yellow bg-quaternary"
-            >
-              3/4 Pot
-            </CustomButton>
-          )}
-          {game.pot.main.total < user.gameChips && (
-            <CustomButton
-              onClick={() => {
-                actionHandler({ action: { amount: game.pot.main.total, type: 'bet' } });
-              }}
-              className="border-yellow text-yellow bg-quaternary"
-            >
-              1x Pot
-            </CustomButton>
-          )}
-          {(5 * game.pot.main.total) / 4 < user.gameChips && (
-            <CustomButton
-              onClick={() => {
-                actionHandler({ action: { amount: Math.floor((5 * game.pot.main.total) / 4), type: 'bet' } });
-              }}
-              className="border-yellow text-yellow bg-quaternary"
-            >
-              5/4 Pot
-            </CustomButton>
-          )}
-          {(3 * game.pot.main.total) / 2 >= user.gameChips && (
-            <CustomButton
-              onClick={() => {
-                actionHandler({ action: { amount: user.gameChips, type: 'bet' } });
-              }}
-              className="border-title text-title bg-quaternary"
-            >
-              ALL-IN
-            </CustomButton>
-          )}
-        </>
-      )}
+      {options.map(({ label, action, tone }) => (
+        <CustomButton key={label} onClick={() => emitAction(action)} className={tone}>
+          {label}
+        </CustomButton>
+      ))}
     </div>
   );
 }

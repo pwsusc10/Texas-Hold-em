@@ -122,7 +122,7 @@ export default function RoomContainer({ roomId }: Props) {
         <RoomOutIcon roomId={roomId} />
       </div>
       {isSeat ? (
-        <PlayTable socket={socket} user={user} roomId={roomId} room={room} seat={seat} />
+        <PlayTable socket={socket} user={user} room={room} seat={seat} />
       ) : (
         <GameTable socket={socket} user={user} roomId={roomId} room={room} seat={seat} setSeat={setSeat} />
       )}
