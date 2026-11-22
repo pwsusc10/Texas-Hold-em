@@ -30,85 +30,39 @@ export default function RoomContainer({ roomId }: Props) {
   useEffect(() => {
     if (!socket) return;
 
-    socket.on('error', ({ message }: { message: string }) => {
-      alert(message);
-    });
-
-    socket.on('byIn', ({ room, newPlayer }: { room: GamePlayType; newPlayer: UserType }) => {
-      console.log('byIn', room);
-      setRoom(room);
-      if (newPlayer.id === user.id) {
-        setIsSeat(true);
-      }
-    });
-
-    socket.on('joinRoom', ({ isPlaying, room, seat }: { isPlaying: boolean; room: GamePlayType; seat: number }) => {
-      console.log('isPlaying', isPlaying, 'seat', seat);
-      console.log('joinRoom', room);
-      if (isPlaying) {
-        setSeat(seat);
-        setIsSeat(true);
-      }
-      setRoom(room);
-    });
-
-    // Clean up: 이벤트 리스너 제거
-    return () => {
-      socket.off('byIn');
-      socket.off('joinRoom');
-      socket.off('error');
+    const handlers: Record<string, (payload: any) => void> = {
+      error: ({ message }: { message: string }) => alert(message),
+      joinRoom: ({ isPlaying, room, seat }: { isPlaying: boolean; room: GamePlayType; seat: number }) => {
+        if (isPlaying) {
+          setSeat(seat);
+          setIsSeat(true);
+        }
+        setRoom(room);
+      },
+      byIn: ({ room, newPlayer }: { room: GamePlayType; newPlayer: UserType }) => {
+        setRoom(room);
+        if (newPlayer.id === user.id) setIsSeat(true);
+      },
+      smallBlind: ({ room }: { room: GamePlayType }) => {
+        setRoom(room);
+        if (room.position.sb.player.id === user.id) socket.emit('smallBlind', { roomId, amount: room.blind / 2 });
+      },
+      bigBlind: ({ room }: { room: GamePlayType }) => {
+        setRoom(room);
+        if (room.position.bb.player.id === user.id) socket.emit('bigBlind', { roomId, user, amount: room.blind });
+      },
+      bet: ({ room }: { room: GamePlayType }) => setRoom(room),
+      playShowdown: ({ room }: { room: GamePlayType }) => setRoom(room),
+      // TODO: board, card open, winner animation 처리
+      showWinners: ({ room }: { room: GamePlayType; winners: SidePotType[] }) => setRoom(room),
+      endGame: () => socket.emit('joinRoom', { roomId, user })
     };
-  }, [socket, room]);
 
-  useEffect(() => {
-    if (!socket) {
-      console.log('socket not found');
-      return;
-    }
-    socket.on('smallBlind', ({ room }: { room: GamePlayType }) => {
-      console.log('on smallBlind');
-      setRoom(room);
-      if (room.position.sb.player.id === user.id) {
-        console.log('emit smallBlind userId : ', user.id, user.user_name);
-        socket.emit('smallBlind', { roomId, amount: room.blind / 2 });
-      }
-    });
-    socket.on('bigBlind', ({ room }: { room: GamePlayType }) => {
-      console.log('on bigBlind, bigBlind : ', room.position.bb.player.user_name);
-      setRoom(room);
-      if (room.position.bb.player.id === user.id) {
-        console.log('emit bigBlind userId : ', user.id, user.user_name);
-        socket.emit('bigBlind', { roomId, user, amount: room.blind });
-      }
-    });
-    socket.on('bet', ({ room }: { room: GamePlayType }) => {
-      console.log('on bet', room);
-      setRoom(room);
-    });
-    socket.on('endGame', ({ room }: { room: GamePlayType }) => {
-      socket.emit('joinRoom', { roomId, user });
-      // console.log('on endGame', room);
-      // setRoom(room);
-    });
-    socket.on('playShowdown', ({ room }: { room: GamePlayType }) => {
-      console.log('on playShowdown', room);
-      setRoom(room);
-    });
-    // TODO: board, card open, winner animation 처리
-    socket.on('showWinners', ({ room, winners }: { room: GamePlayType; winners: SidePotType[] }) => {
-      console.log('on showdownWinners : ', winners, 'room : ', room);
-      setRoom(room);
-    });
-
+    for (const [event, handler] of Object.entries(handlers)) socket.on(event, handler);
     return () => {
-      socket.off('smallBlind');
-      socket.off('bigBlind');
-      socket.off('bet');
-      socket.off('endGame');
-      socket.off('playShowdown');
-      socket.off('showWinners');
+      for (const [event, handler] of Object.entries(handlers)) socket.off(event, handler);
     };
-  }, []);
+  }, [socket, roomId, user]);
 
   if (!room) {
     return <div className="mx-auto my-auto text-3xl">room not found loading... / in game</div>;
