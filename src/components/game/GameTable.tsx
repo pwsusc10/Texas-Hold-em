@@ -41,7 +41,7 @@ export default function GameTable({ socket, user, roomId, room, seat, setSeat }:
       room={room}
       renderSeat={({ seatNumber, positionIndex, player }) =>
         player ? (
-          <GameUser player={player} user={user} positionIndex={positionIndex} seat={seat} game={room} />
+          <GameUser player={player} user={user} positionIndex={positionIndex} seat={seatNumber} game={room} />
         ) : (
           <SeatButton onClick={() => seatHandler(seatNumber)} className="hover:cursor-pointer hover:scale-105" />
         )
