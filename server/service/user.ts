@@ -1,5 +1,5 @@
 import { HandIdsType, UserType } from '@/model';
-import { RowDataPacket } from 'mysql2';
+import { ResultSetHeader, RowDataPacket } from 'mysql2';
 import { User } from 'next-auth';
 import { AdapterUser } from 'next-auth/adapters';
 import { db } from '../db/db';
@@ -51,12 +51,9 @@ export const addUser = async (user: User | AdapterUser): Promise<number | null> 
   try {
     connection = await db.getConnection();
     const query = "INSERT INTO `hold'em`.`user` (`user_name`, `email`, `profile`, `chips`) VALUES (?, ?, ?, ?);";
-    await db.execute(query, [user.name, user.email, user.image, 0]);
-    const getIdQuery = "SELECT MAX(id) FROM `hold'em`.user;";
-    const [result] = await connection.execute<RowDataPacket[]>(getIdQuery);
-    const { 'MAX(id)': maxId } = result[0];
+    const [result] = await connection.execute<ResultSetHeader>(query, [user.name ?? null, user.email ?? null, user.image ?? null, 0]);
 
-    return maxId;
+    return result.insertId;
   } catch (error) {
     console.error('next-auth addUser function Error: ', error);
     return null;
