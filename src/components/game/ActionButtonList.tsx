@@ -1,5 +1,5 @@
 import { ActionType, GamePlayerType, GamePlayType, PlayerNodeType } from '@/model';
-import React from 'react';
+import React, { useRef, useState } from 'react';
 import { CustomButton } from '../Buttons';
 import { Socket } from 'socket.io-client';
 
@@ -75,7 +75,15 @@ export default function ActionButtonList({ socket, game, prevBet, user }: Props)
   const toCall = prevBet.player.action.amount;
   const options = toCall > 0 ? facingBetOptions(toCall, user) : openingOptions(game, user);
 
+  // One bet per game state: a new `game` from the server unlocks the buttons again (e.g. after an error).
+  const sentFor = useRef<GamePlayType | null>(null);
+  const [lockedFor, setLockedFor] = useState<GamePlayType | null>(null);
+  const locked = lockedFor === game;
+
   const emitAction = (action: ActionType) => {
+    if (sentFor.current === game) return;
+    sentFor.current = game;
+    setLockedFor(game);
     const isReRaise = action.type === 'raise' && (prevBet.player.action.type === 'raise' || prevBet.player.action.type === 're-raise');
     socket.emit('bet', { roomId: game.roomId, user, action: isReRaise ? { amount: action.amount, type: 're-raise' } : action });
   };
@@ -83,7 +91,7 @@ export default function ActionButtonList({ socket, game, prevBet, user }: Props)
   return (
     <div className="flex gap-1">
       {options.map(({ label, action, tone }) => (
-        <CustomButton key={label} onClick={() => emitAction(action)} className={tone}>
+        <CustomButton key={label} onClick={() => emitAction(action)} disabled={locked} className={tone}>
           {label}
         </CustomButton>
       ))}
